@@ -1,57 +1,44 @@
+# SPDX-License-Identifier: GPL-2.0-only
 #
 # Copyright (C) 2017-2020 Yousong Zhou <yszhou4tech@gmail.com>
-#
-# Copyright (C) 2021 ImmortalWrt
-# <https://immortalwrt.org>
-#
-# This is free software, licensed under the GNU General Public License v2.
-# See /LICENSE for more information.
-#
+# Copyright (C) 2021 ImmortalWrt.org
 
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=shadowsocks-rust
-PKG_VERSION:=1.10.9
+PKG_VERSION:=1.12.1
 PKG_RELEASE:=1
 
 PKG_SOURCE_HEADER:=shadowsocks-v$(PKG_VERSION)
 PKG_SOURCE_BODY:=unknown-linux-musl
 PKG_SOURCE_FOOTER:=tar.xz
-PKG_SOURCE_URL:=https://github.com/shell-script/openwrt-shadowsocks-rust/releases/download/v$(PKG_VERSION)/
+PKG_SOURCE_URL:=https://github.com/shadowsocks/shadowsocks-rust/releases/download/v$(PKG_VERSION)/
 
 ifeq ($(ARCH),aarch64)
   PKG_SOURCE:=$(PKG_SOURCE_HEADER).aarch64-$(PKG_SOURCE_BODY).$(PKG_SOURCE_FOOTER)
-  PKG_HASH:=fc9da7507022ab9948cbd10c872b85a3b10815153d2644696737eff4fe4c7792
+  PKG_HASH:=ed56c8ce43f7d1999809ca2297636ee52565c2fc1177e023a4fe2366ebe42d6f
 else ifeq ($(ARCH),arm)
   # Referred to golang/golang-values.mk
   ARM_CPU_FEATURES:=$(word 2,$(subst +,$(space),$(call qstrip,$(CONFIG_CPU_TYPE))))
   ifeq ($(ARM_CPU_FEATURES),)
     PKG_SOURCE:=$(PKG_SOURCE_HEADER).arm-$(PKG_SOURCE_BODY)eabi.$(PKG_SOURCE_FOOTER)
-    PKG_HASH:=279bca49a67a0677159c225ffdb0d9ae5baf3f94f2c0404c17e0c965dcbc540b
-  else ifneq ($(filter $(ARM_CPU_FEATURES),vfp vfpv2),)
-    PKG_SOURCE:=$(PKG_SOURCE_HEADER).arm-$(PKG_SOURCE_BODY)eabihf.$(PKG_SOURCE_FOOTER)
-    PKG_HASH:=4ff4e99ee6f070e582aedb511389333ac02f31330794b2926bb6d29f2632ab04
+    PKG_HASH:=50a5aeb1c8078981599341b63a3992edb7247a51323b12d8c162c630026830ec
   else
-    PKG_SOURCE:=$(PKG_SOURCE_HEADER).armv7-$(PKG_SOURCE_BODY)eabihf.$(PKG_SOURCE_FOOTER)
-    PKG_HASH:=5765da9dd3b73de51656d49c937d2c9ffc328dea9c613e3992ab91ddcfd54582
+    PKG_SOURCE:=$(PKG_SOURCE_HEADER).arm-$(PKG_SOURCE_BODY)eabihf.$(PKG_SOURCE_FOOTER)
+    PKG_HASH:=a500f61c276ad56ece80afd4845d88228d446ea71b76ab3e22a3c3f26f4012d9
   endif
 else ifeq ($(ARCH),i386)
-  ifeq ($(CONFIG_TARGET_x86_geode)$(CONFIG_TARGET_x86_legacy),y)
-    PKG_SOURCE:=$(PKG_SOURCE_HEADER).i586-$(PKG_SOURCE_BODY).$(PKG_SOURCE_FOOTER)
-    PKG_HASH:=e7d83fbd2990228be1ae4aa735ad230927e6f67309b4a0ded1a4f4638477dcdc
-  else
-    PKG_SOURCE:=$(PKG_SOURCE_HEADER).i686-$(PKG_SOURCE_BODY).$(PKG_SOURCE_FOOTER)
-    PKG_HASH:=e9b6f306b794db0611c5f5456ff0bde7a0217efdee3bc2c78590776339f5e9e8
-  endif
+  PKG_SOURCE:=$(PKG_SOURCE_HEADER).i686-$(PKG_SOURCE_BODY).$(PKG_SOURCE_FOOTER)
+  PKG_HASH:=39e0084370e70b5c2eb6f1c4ae1cbccd4427c8f146281df30963ae9574c3ffe7
 else ifeq ($(ARCH),mips)
   PKG_SOURCE:=$(PKG_SOURCE_HEADER).mips-$(PKG_SOURCE_BODY).$(PKG_SOURCE_FOOTER)
-  PKG_HASH:=950285409573d65124daab708168571c7a5fbd4a49aaee365eaba30eee5f4622
+  PKG_HASH:=147fc036411088b6bdef4e60b745f29314ee4389c57db54ad02cc2035d185f06
 else ifeq ($(ARCH),mipsel)
   PKG_SOURCE:=$(PKG_SOURCE_HEADER).mipsel-$(PKG_SOURCE_BODY).$(PKG_SOURCE_FOOTER)
-  PKG_HASH:=5d90540342f1b5d095950a2176dee0a7837f565da242c05643d243a63c959b8b
+  PKG_HASH:=a0ef0cbc184e7d39ad1b4c3842426db3bc3766cc091c6f4d59ea622ca44ad365
 else ifeq ($(ARCH),x86_64)
   PKG_SOURCE:=$(PKG_SOURCE_HEADER).x86_64-$(PKG_SOURCE_BODY).$(PKG_SOURCE_FOOTER)
-  PKG_HASH:=b647f5e35b4bafab68ad4ce98c3f2a1cc1786389a6414fae1a25ba8390371da5
+  PKG_HASH:=74ceaf9f4487d06cefa2e20346752bedbe65046c9a8785a247a84e97645c9f2b
 # Set the default value to make OpenWrt Package Checker happy
 else
   PKG_SOURCE:=dummy
@@ -73,7 +60,7 @@ define Package/shadowsocks-rust/Default
     SUBMENU:=Web Servers/Proxies
     TITLE:=shadowsocks-rust $(1)
     URL:=https://github.com/shadowsocks/shadowsocks-rust
-    DEPENDS:=@(aarch64||arm||i386||mips||mipsel||x86_64) @USE_MUSL
+    DEPENDS:=@USE_MUSL @(aarch64||arm||i386||mips||mipsel||x86_64) @!(TARGET_x86_geode||TARGET_x86_legacy)
   endef
 
   define Package/shadowsocks-rust-$(1)/install

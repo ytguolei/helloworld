@@ -5,12 +5,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=v2ray-core
-PKG_VERSION:=4.39.1
-PKG_RELEASE:=1
+PKG_VERSION:=4.43.0
+PKG_RELEASE:=$(AUTORELEASE)
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/v2fly/v2ray-core/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=461964e374f04c9f7a593d819c09c16b3ecb10a1456a1f375c19aa7ca2c3f2ab
+PKG_HASH:=f27b8fe8e1e102b0297339ee368c8b650fde0f949e0d90e1229ff6744f99ba0f
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE
@@ -122,24 +122,24 @@ config V2RAY_CTL_COMPRESS_UPX
 endmenu
 endef
 
-GEOIP_VER:=202105060017
+GEOIP_VER:=202110210032
 GEOIP_FILE:=geoip.dat.$(GEOIP_VER)
 
 define Download/geoip
   URL:=https://github.com/v2fly/geoip/releases/download/$(GEOIP_VER)/
   URL_FILE:=geoip.dat
   FILE:=$(GEOIP_FILE)
-  HASH:=99ac29c9413a5c22327e858699a2ad782ecdbf3459a2f88505f0f9a8e5cfeba6
+  HASH:=932cd484471f8066c040ab84a04fdd70df6c5cee99545de610e1f337bb696220
 endef
 
-GEOSITE_VER:=20210503160945
+GEOSITE_VER:=20211018134657
 GEOSITE_FILE:=dlc.dat.$(GEOSITE_VER)
 
 define Download/geosite
   URL:=https://github.com/v2fly/domain-list-community/releases/download/$(GEOSITE_VER)/
   URL_FILE:=dlc.dat
   FILE:=$(GEOSITE_FILE)
-  HASH:=14549ca50f78da17543e217a5e816e25b0a9f8d94158cee4b7b5e55f78da643f
+  HASH:=60b2388b11f1f9b6e14794fbacdf3bf693e3101e3ec651ce5423d8caceda5497
 endef
 
 ifneq ($(CONFIG_V2RAY_CORE_COMPRESS_GOPROXY)$(CONFIG_V2RAY_CTL_COMPRESS_GOPROXY),)
